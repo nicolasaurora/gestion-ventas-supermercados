@@ -1,7 +1,9 @@
 package com.supermercado.GestionVentasSupermercado.Service;
 
 import com.supermercado.GestionVentasSupermercado.Dto.ProductoDTO;
+import com.supermercado.GestionVentasSupermercado.Model.Producto;
 import com.supermercado.GestionVentasSupermercado.Repository.ProductoRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,41 +12,58 @@ import java.util.List;
 public class ProductoService implements IProductoService {
 
     private final ProductoRepository productoRepository;
+    private final ModelMapper modelMapper;
 
-    public ProductoService(ProductoRepository productoRepository) {
+    public ProductoService(ProductoRepository productoRepository, ModelMapper modelMapper) {
         this.productoRepository = productoRepository;
+        this.modelMapper = modelMapper;
     }
 
 
     @Override
     public ProductoDTO create(ProductoDTO productoDto) {
-        return productoRepository.save(productoDto);
+
+        Producto producto = modelMapper.map(productoDto, Producto.class);
+
+        Producto productoGuardado = productoRepository.save(producto);
+
+        return  modelMapper.map(productoGuardado, ProductoDTO.class);
     }
 
     @Override
     public ProductoDTO getById(Long id) {
-        return productoRepository.findById(id)
+        Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto con ID: " + id + "no encontrado."));
+
+        return modelMapper.map(producto, ProductoDTO.class);
     }
 
     @Override
     public List<ProductoDTO> getAll() {
-        List<ProductoDTO> productosEncontrados = productoRepository.findAll();
-        if (productosEncontrados.isEmpty()) {
+
+        List<Producto> productos = productoRepository.findAll();
+
+        if (productos.isEmpty()) {
             throw new RuntimeException("Aun no hay productos agregados.");
         }
-        return productosEncontrados;
+
+        return productos.stream()
+                .map(producto -> modelMapper.map(producto, ProductoDTO.class))
+                .toList();
     }
 
     @Override
     public ProductoDTO updateById(Long id, ProductoDTO productoDto) {
+
         return productoRepository.findById(id).map(prodEncontrado -> {
             prodEncontrado.setCategoria(productoDto.getCategoria());
             prodEncontrado.setNombre(productoDto.getNombre());
             prodEncontrado.setPrecio(productoDto.getPrecio());
             prodEncontrado.setCantidad(productoDto.getCantidad());
 
-            return productoRepository.save(prodEncontrado);
+            Producto actualizado = productoRepository.save(prodEncontrado);
+            return modelMapper.map(actualizado, ProductoDTO.class);
+
         }).orElseThrow(() -> new RuntimeException("Producto con ID: " + id + "no encontrado."));
     }
 
