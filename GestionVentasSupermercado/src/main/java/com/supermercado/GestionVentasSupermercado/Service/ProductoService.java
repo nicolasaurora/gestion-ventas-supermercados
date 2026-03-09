@@ -22,6 +22,9 @@ public class ProductoService implements IProductoService {
 
     @Override
     public ProductoDTO create(ProductoDTO productoDto) {
+        if(productoRepository.existByNombre(productoDto.getNombre())) {
+            throw new RuntimeException("Ya existe un producto con ese nombre.");
+        }
 
         Producto producto = modelMapper.map(productoDto, Producto.class);
 
@@ -40,7 +43,6 @@ public class ProductoService implements IProductoService {
 
     @Override
     public List<ProductoDTO> getAll() {
-
         List<Producto> productos = productoRepository.findAll();
 
         if (productos.isEmpty()) {
@@ -54,17 +56,17 @@ public class ProductoService implements IProductoService {
 
     @Override
     public ProductoDTO updateById(Long id, ProductoDTO productoDto) {
+        Producto productoEncontrado = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con ID: " + id + ", no encontrado."));
 
-        return productoRepository.findById(id).map(prodEncontrado -> {
-            prodEncontrado.setCategoria(productoDto.getCategoria());
-            prodEncontrado.setNombre(productoDto.getNombre());
-            prodEncontrado.setPrecio(productoDto.getPrecio());
-            prodEncontrado.setCantidad(productoDto.getCantidad());
+        productoEncontrado.setNombre(productoDto.getNombre());
+        productoEncontrado.setCategoria(productoDto.getCategoria());
+        productoEncontrado.setPrecio(productoDto.getPrecio());
+        productoEncontrado.setCantidad(productoDto.getCantidad());
 
-            Producto actualizado = productoRepository.save(prodEncontrado);
-            return modelMapper.map(actualizado, ProductoDTO.class);
+        Producto actualizado = productoRepository.save(productoEncontrado);
 
-        }).orElseThrow(() -> new RuntimeException("Producto con ID: " + id + "no encontrado."));
+        return modelMapper.map(actualizado, ProductoDTO.class);
     }
 
     @Override
