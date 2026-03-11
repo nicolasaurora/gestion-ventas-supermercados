@@ -2,7 +2,9 @@ package com.supermercado.GestionVentasSupermercado.Service;
 
 import com.supermercado.GestionVentasSupermercado.Dto.SucursalDTO;
 import com.supermercado.GestionVentasSupermercado.Dto.VentaDTO;
+import com.supermercado.GestionVentasSupermercado.Model.Sucursal;
 import com.supermercado.GestionVentasSupermercado.Model.Venta;
+import com.supermercado.GestionVentasSupermercado.Repository.SucursalRepository;
 import com.supermercado.GestionVentasSupermercado.Repository.VentaRepository;
 import org.modelmapper.ModelMapper;
 
@@ -10,10 +12,12 @@ import java.util.List;
 
 public class VentaService implements IVentaService {
     private final VentaRepository ventaRepository;
+    private final SucursalRepository sucursalRepository;
     private final ModelMapper modelMapper;
 
-    public VentaService(VentaRepository ventaRepository, ModelMapper modelMapper) {
+    public VentaService(VentaRepository ventaRepository, SucursalRepository sucursalRepository, ModelMapper modelMapper) {
         this.ventaRepository = ventaRepository;
+        this.sucursalRepository = sucursalRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -48,8 +52,11 @@ public class VentaService implements IVentaService {
     }
 
     @Override
-    public List<VentaDTO> getVentasBySucursal(SucursalDTO sucursaldto) {
-        List<Venta> ventasSucursal = ventaRepository.findBySucursal(sucursaldto);
+    public List<VentaDTO> getVentasBySucursal(Long sucursalId) {
+        Sucursal sucursal = sucursalRepository.findById(sucursalId)
+                .orElseThrow(() -> new RuntimeException("La sucursal con ID: " + sucursalId + " no existe."));
+
+        List<Venta> ventasSucursal = ventaRepository.findBySucursal(sucursal);
 
         if(ventasSucursal.isEmpty()) {
             throw new RuntimeException("La sucursal aun no registra ventas.");
