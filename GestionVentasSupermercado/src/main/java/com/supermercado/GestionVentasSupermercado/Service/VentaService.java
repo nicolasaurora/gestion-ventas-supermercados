@@ -36,16 +36,35 @@ public class VentaService implements IVentaService {
 
     @Override
     public List<VentaDTO> getAll() {
-        return List.of();
+        List<Venta> ventas = ventaRepository.findAll();
+
+        if(ventas.isEmpty()) {
+            throw new RuntimeException("Aun no hay ventas registradas.");
+        }
+
+        return ventas.stream()
+                .map(venta -> modelMapper.map(venta, VentaDTO.class))
+                .toList();
     }
 
     @Override
     public List<VentaDTO> getVentasBySucursal(SucursalDTO sucursaldto) {
-        return List.of();
+        List<Venta> ventasSucursal = ventaRepository.findBySucursal(sucursaldto);
+
+        if(ventasSucursal.isEmpty()) {
+            throw new RuntimeException("La sucursal aun no registra ventas.");
+        }
+
+        return ventasSucursal.stream()
+                .map(venta -> modelMapper.map(venta, VentaDTO.class))
+                .toList();
     }
 
     @Override
     public void deleteById(Long id) {
-
+        if(!ventaRepository.existsById(id)) {
+            throw new RuntimeException("La venta con ID: " + id + " no existe!");
+        }
+        ventaRepository.deleteById(id);
     }
 }
