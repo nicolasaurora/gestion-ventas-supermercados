@@ -1,5 +1,6 @@
 package com.supermercado.GestionVentasSupermercado.service;
 
+import com.supermercado.GestionVentasSupermercado.dto.DetalleVentaDTO;
 import com.supermercado.GestionVentasSupermercado.dto.VentaDTO;
 import com.supermercado.GestionVentasSupermercado.exception.EmptyResourceListException;
 import com.supermercado.GestionVentasSupermercado.exception.NotFoundException;
@@ -26,6 +27,15 @@ public class VentaService implements IVentaService {
 
     @Override
     public VentaDTO create(VentaDTO ventaDto) {
+        ventaDto.getDetalle()
+                .forEach(d -> d.setSubtotal(d.getPrecio() * d.getCantProducto()));
+
+        Double total = ventaDto.getDetalle()
+                .stream()
+                .mapToDouble(DetalleVentaDTO::getSubtotal)
+                .sum();
+        ventaDto.setTotal(total);
+
         Venta venta = modelMapper.map(ventaDto, Venta.class);
 
         Venta ventaNueva = ventaRepository.save(venta);
