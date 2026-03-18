@@ -1,19 +1,13 @@
-package com.supermercado.GestionVentasSupermercado.Dto;
+package com.supermercado.GestionVentasSupermercado.dto;
 
-import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter @Setter
-@Entity
 public class VentaDTO {
     //Datos de la venta
     private Long id;

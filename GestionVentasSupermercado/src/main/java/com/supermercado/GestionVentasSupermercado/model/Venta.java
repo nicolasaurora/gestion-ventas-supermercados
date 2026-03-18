@@ -1,4 +1,4 @@
-package com.supermercado.GestionVentasSupermercado.Model;
+package com.supermercado.GestionVentasSupermercado.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

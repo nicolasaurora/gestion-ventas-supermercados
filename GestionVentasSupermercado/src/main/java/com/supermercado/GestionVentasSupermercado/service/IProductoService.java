@@ -1,6 +1,6 @@
-package com.supermercado.GestionVentasSupermercado.Service;
+package com.supermercado.GestionVentasSupermercado.service;
 
-import com.supermercado.GestionVentasSupermercado.Dto.ProductoDTO;
+import com.supermercado.GestionVentasSupermercado.dto.ProductoDTO;
 
 import java.util.List;
 

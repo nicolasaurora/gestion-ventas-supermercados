@@ -1,12 +1,17 @@
-package com.supermercado.GestionVentasSupermercado.Service;
+package com.supermercado.GestionVentasSupermercado.service;
 
-import com.supermercado.GestionVentasSupermercado.Dto.SucursalDTO;
-import com.supermercado.GestionVentasSupermercado.Model.Sucursal;
-import com.supermercado.GestionVentasSupermercado.Repository.SucursalRepository;
+import com.supermercado.GestionVentasSupermercado.dto.SucursalDTO;
+import com.supermercado.GestionVentasSupermercado.exception.DuplicateResourceException;
+import com.supermercado.GestionVentasSupermercado.exception.EmptyResourceListException;
+import com.supermercado.GestionVentasSupermercado.exception.NotFoundException;
+import com.supermercado.GestionVentasSupermercado.model.Sucursal;
+import com.supermercado.GestionVentasSupermercado.repository.SucursalRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class SucursalService implements ISucursalService {
 
     private final SucursalRepository sucursalRepository;
@@ -20,8 +25,8 @@ public class SucursalService implements ISucursalService {
 
     @Override
     public SucursalDTO create(SucursalDTO sucursalDto) {
-        if(sucursalRepository.existByNombre(sucursalDto.getNombre())) {
-            throw new RuntimeException("Ya existe una sucursal con ese nombre.");
+        if(sucursalRepository.existsByNombre(sucursalDto.getNombre())) {
+            throw new DuplicateResourceException("Ya existe una sucursal con ese nombre.");
         }
 
         Sucursal sucursal = modelMapper.map(sucursalDto, Sucursal.class);
@@ -34,7 +39,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public SucursalDTO getById(Long id) {
         Sucursal sucursalEncontrada = sucursalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sucursal con ID: " + id + " no encontrada."));
+                .orElseThrow(() -> new NotFoundException("Sucursal con ID: " + id + " no encontrada."));
 
         return modelMapper.map(sucursalEncontrada, SucursalDTO.class);
     }
@@ -44,7 +49,7 @@ public class SucursalService implements ISucursalService {
         List<Sucursal> sucursales = sucursalRepository.findAll();
 
         if(sucursales.isEmpty()) {
-            throw new RuntimeException("Aun no hay sucursales agregadas.");
+            throw new EmptyResourceListException("Aun no hay sucursales agregadas.");
         }
 
         return sucursales.stream()
@@ -56,7 +61,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public SucursalDTO updateById(Long id, SucursalDTO sucursalDto) {
         Sucursal sucursalEncontrada = sucursalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sucursal con ID: " + id + " no encontrada."));
+                .orElseThrow(() -> new NotFoundException("Sucursal con ID: " + id + " no encontrada."));
 
         sucursalEncontrada.setNombre(sucursalDto.getNombre());
         sucursalEncontrada.setDireccion(sucursalDto.getDireccion());
@@ -68,7 +73,7 @@ public class SucursalService implements ISucursalService {
     @Override
     public void deleteById(Long id) {
         if(!sucursalRepository.existsById(id)) {
-            throw new RuntimeException("Sucursal con ID: " + id + " no encontrada.");
+            throw new NotFoundException("Sucursal con ID: " + id + " no encontrada.");
         }
 
         sucursalRepository.deleteById(id);

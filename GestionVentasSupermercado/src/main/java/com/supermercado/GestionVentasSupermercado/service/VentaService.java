@@ -1,15 +1,18 @@
-package com.supermercado.GestionVentasSupermercado.Service;
+package com.supermercado.GestionVentasSupermercado.service;
 
-import com.supermercado.GestionVentasSupermercado.Dto.SucursalDTO;
-import com.supermercado.GestionVentasSupermercado.Dto.VentaDTO;
-import com.supermercado.GestionVentasSupermercado.Model.Sucursal;
-import com.supermercado.GestionVentasSupermercado.Model.Venta;
-import com.supermercado.GestionVentasSupermercado.Repository.SucursalRepository;
-import com.supermercado.GestionVentasSupermercado.Repository.VentaRepository;
+import com.supermercado.GestionVentasSupermercado.dto.VentaDTO;
+import com.supermercado.GestionVentasSupermercado.exception.EmptyResourceListException;
+import com.supermercado.GestionVentasSupermercado.exception.NotFoundException;
+import com.supermercado.GestionVentasSupermercado.model.Sucursal;
+import com.supermercado.GestionVentasSupermercado.model.Venta;
+import com.supermercado.GestionVentasSupermercado.repository.SucursalRepository;
+import com.supermercado.GestionVentasSupermercado.repository.VentaRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class VentaService implements IVentaService {
     private final VentaRepository ventaRepository;
     private final SucursalRepository sucursalRepository;
@@ -33,7 +36,7 @@ public class VentaService implements IVentaService {
     @Override
     public VentaDTO getVentaById(Long id) {
         Venta ventaEncontrada = ventaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("La venta con ID: " + id + " no existe."));
+                .orElseThrow(() -> new NotFoundException("La venta con ID: " + id + " no existe."));
 
         return modelMapper.map(ventaEncontrada, VentaDTO.class);
     }
@@ -43,7 +46,7 @@ public class VentaService implements IVentaService {
         List<Venta> ventas = ventaRepository.findAll();
 
         if(ventas.isEmpty()) {
-            throw new RuntimeException("Aun no hay ventas registradas.");
+            throw new EmptyResourceListException("Aun no hay ventas registradas.");
         }
 
         return ventas.stream()
@@ -54,7 +57,7 @@ public class VentaService implements IVentaService {
     @Override
     public List<VentaDTO> getVentasBySucursal(Long sucursalId) {
         Sucursal sucursal = sucursalRepository.findById(sucursalId)
-                .orElseThrow(() -> new RuntimeException("La sucursal con ID: " + sucursalId + " no existe."));
+                .orElseThrow(() -> new NotFoundException("La sucursal con ID: " + sucursalId + " no existe."));
 
         List<Venta> ventasSucursal = ventaRepository.findBySucursal(sucursal);
 
@@ -70,7 +73,7 @@ public class VentaService implements IVentaService {
     @Override
     public void deleteById(Long id) {
         if(!ventaRepository.existsById(id)) {
-            throw new RuntimeException("La venta con ID: " + id + " no existe!");
+            throw new NotFoundException("La venta con ID: " + id + " no existe!");
         }
         ventaRepository.deleteById(id);
     }

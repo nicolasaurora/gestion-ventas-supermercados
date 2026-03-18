@@ -1,4 +1,4 @@
-package com.supermercado.GestionVentasSupermercado.Config;
+package com.supermercado.GestionVentasSupermercado.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

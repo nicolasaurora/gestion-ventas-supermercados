@@ -1,5 +1,4 @@
-package com.supermercado.GestionVentasSupermercado.Model;
-
+package com.supermercado.GestionVentasSupermercado.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,12 +10,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter @Setter
 @Entity
-public class Sucursal {
+public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String direccion;
+    private Double precio;
+    private String categoria;
+    private int cantidad;
 
 }

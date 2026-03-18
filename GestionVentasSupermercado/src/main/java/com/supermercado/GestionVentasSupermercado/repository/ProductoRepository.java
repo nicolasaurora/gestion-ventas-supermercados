@@ -1,12 +1,12 @@
-package com.supermercado.GestionVentasSupermercado.Repository;
+package com.supermercado.GestionVentasSupermercado.repository;
 
-import com.supermercado.GestionVentasSupermercado.Model.Producto;
+import com.supermercado.GestionVentasSupermercado.model.Producto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
-    boolean existByNombre(String nombre);
+    boolean existsByNombre(String nombre);
 
 }

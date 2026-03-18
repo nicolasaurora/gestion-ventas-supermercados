@@ -1,7 +1,7 @@
-package com.supermercado.GestionVentasSupermercado.Repository;
+package com.supermercado.GestionVentasSupermercado.repository;
 
-import com.supermercado.GestionVentasSupermercado.Model.Sucursal;
-import com.supermercado.GestionVentasSupermercado.Model.Venta;
+import com.supermercado.GestionVentasSupermercado.model.Sucursal;
+import com.supermercado.GestionVentasSupermercado.model.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

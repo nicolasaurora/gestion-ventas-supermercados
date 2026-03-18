@@ -1,0 +1,7 @@
+package com.supermercado.GestionVentasSupermercado.exception;
+
+public class DuplicateResourceException extends RuntimeException {
+    public DuplicateResourceException(String msj) {
+        super(msj);
+    }
+}
